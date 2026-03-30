@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SANOG Engenharia e Construções</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green:        #135724;
+    --green-mid:    #1a7030;
+    --green-light:  #e8f2eb;
+    --green-xlight: #f2f8f4;
+    --orange:       #E85D04;
+    --white:        #FFFFFF;
+    --off-white:    #F9F9F7;
+    --gray-50:      #F4F4F2;
+    --gray-100:     #EAEAE6;
+    --gray-300:     #C8C8C0;
+    --gray-500:     #8A8A82;
+    --gray-700:     #4A4A44;
+    --black:        #16160F;
+    --shadow-sm:    0 2px 8px rgba(19,87,36,0.07);
+    --shadow-md:    0 8px 32px rgba(19,87,36,0.10);
+    --shadow-lg:    0 20px 60px rgba(19,87,36,0.13);
+  }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { font-family:'Barlow',sans-serif; background:var(--white); color:var(--black); overflow-x:hidden; }
+  ::-webkit-scrollbar { width:5px; }
+  ::-webkit-scrollbar-track { background:var(--gray-50); }
+  ::-webkit-scrollbar-thumb { background:var(--green); border-radius:3px; }
+
+  /* ── NAV ── */
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:200;
+    background:rgba(255,255,255,0.97); backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--gray-100);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 6%; height:70px;
+    transition:box-shadow 0.3s;
+  }
+  nav.scrolled { box-shadow:0 4px 24px rgba(0,0,0,0.08); }
+
+  /* LOGO = HOME BUTTON */
+  .logo {
+    display:flex; align-items:center; gap:11px;
+    text-decoration:none; cursor:pointer;
+    transition:opacity 0.2s;
+  }
+  .logo:hover { opacity:0.82; }
+  .logo-hex {
+    width:44px; height:44px; background:var(--green);
+    clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .logo-hex svg { width:20px; height:20px; fill:white; }
+  .logo-words { display:flex; flex-direction:column; line-height:1.1; }
+  .logo-main { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1.35rem; letter-spacing:0.07em; color:var(--green); text-transform:uppercase; }
+  .logo-tagline { font-size:0.62rem; font-weight:600; letter-spacing:0.14em; color:var(--gray-500); text-transform:uppercase; }
+
+  nav ul { list-style:none; display:flex; align-items:center; gap:36px; }
+  nav ul a {
+    color:var(--gray-700); text-decoration:none;
+    font-size:0.83rem; font-weight:500; letter-spacing:0.05em; text-transform:uppercase;
+    transition:color 0.2s; position:relative;
+  }
+  nav ul a::after {
+    content:''; position:absolute; bottom:-4px; left:0; right:0;
+    height:2px; background:var(--green);
+    transform:scaleX(0); transform-origin:left; transition:transform 0.25s;
+  }
+  nav ul a:hover { color:var(--green); }
+  nav ul a:hover::after { transform:scaleX(1); }
+  .nav-cta {
+    background:var(--green) !important; color:white !important;
+    padding:11px 24px !important; border-radius:4px !important;
+    font-weight:700 !important; letter-spacing:0.06em !important;
+    transition:background 0.2s, transform 0.2s !important;
+  }
+  .nav-cta::after { display:none !important; }
+  .nav-cta:hover { background:var(--green-mid) !important; transform:translateY(-1px) !important; }
+
+  /* ── BUTTONS ── */
+  .btn-green {
+    display:inline-flex; align-items:center; gap:9px; text-decoration:none;
+    background:var(--green); color:white; padding:15px 32px; border-radius:4px;
+    font-family:'Barlow Condensed',sans-serif; font-size:1rem;
+    font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+    border:2px solid var(--green); transition:all 0.25s;
+  }
+  .btn-green:hover { background:var(--green-mid); border-color:var(--green-mid); transform:translateY(-2px); box-shadow:0 10px 28px rgba(19,87,36,0.25); }
+  .btn-outline {
+    display:inline-flex; align-items:center; gap:9px; text-decoration:none;
+    background:transparent; color:var(--green); padding:13px 30px; border-radius:4px;
+    font-family:'Barlow Condensed',sans-serif; font-size:1rem;
+    font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+    border:2px solid var(--green); transition:all 0.25s;
+  }
+  .btn-outline:hover { background:var(--green-light); transform:translateY(-2px); }
+  .btn-white {
+    display:inline-flex; align-items:center; gap:9px; text-decoration:none;
+    background:white; color:var(--green); padding:15px 32px; border-radius:4px;
+    font-family:'Barlow Condensed',sans-serif; font-size:1rem;
+    font-weight:800; letter-spacing:0.08em; text-transform:uppercase; transition:all 0.25s;
+  }
+  .btn-white:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(0,0,0,0.2); }
+  .btn-ghost-white {
+    display:inline-flex; align-items:center; gap:9px; text-decoration:none;
+    background:transparent; color:white; padding:13px 28px; border-radius:4px;
+    font-family:'Barlow Condensed',sans-serif; font-size:1rem;
+    font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+    border:2px solid rgba(255,255,255,0.35); transition:all 0.25s;
+  }
+  .btn-ghost-white:hover { border-color:white; background:rgba(255,255,255,0.1); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height:100vh; padding-top:70px;
+    display:grid; grid-template-columns:55% 45%;
+    overflow:hidden; position:relative;
+  }
+  .hero-left {
+    background:var(--white); display:flex; flex-direction:column; justify-content:center;
+    padding:80px 5% 80px 8%; position:relative; z-index:2;
+  }
+  .hero-left::before {
+    content:''; position:absolute; inset:0; pointer-events:none;
+    background-image:
+      linear-gradient(var(--gray-100) 1px, transparent 1px),
+      linear-gradient(90deg, var(--gray-100) 1px, transparent 1px);
+    background-size:52px 52px; opacity:0.5;
+  }
+  .hero-badge {
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--green-xlight); border:1px solid rgba(19,87,36,0.2);
+    color:var(--green); padding:7px 16px; border-radius:100px;
+    font-size:0.72rem; font-weight:700; letter-spacing:0.13em; text-transform:uppercase;
+    margin-bottom:28px; width:fit-content; position:relative; z-index:1;
+  }
+  .badge-dot { width:7px; height:7px; background:var(--green); border-radius:50%; animation:blink 2s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  .hero h1 {
+    font-family:'Barlow Condensed',sans-serif; font-weight:900;
+    font-size:clamp(3rem,5.5vw,5.2rem); line-height:0.95;
+    text-transform:uppercase; color:var(--black); letter-spacing:-0.01em;
+    margin-bottom:24px; position:relative; z-index:1;
+  }
+  .hero h1 .acc { color:var(--green); }
+  .hero h1 .out { -webkit-text-stroke:2.5px var(--green); color:transparent; }
+
+  .hero-sub {
+    font-size:1.05rem; color:var(--gray-500); line-height:1.72;
+    font-weight:300; max-width:460px; margin-bottom:40px;
+    position:relative; z-index:1;
+  }
+  .hero-ctas { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:52px; position:relative; z-index:1; }
+
+  .hero-trust {
+    display:flex; gap:28px; flex-wrap:wrap;
+    padding-top:32px; border-top:1px solid var(--gray-100);
+    position:relative; z-index:1;
+  }
+  .tp {
+    display:flex; align-items:center; gap:8px;
+    font-size:0.81rem; color:var(--gray-700); font-weight:500;
+  }
+  .tp-check {
+    width:22px; height:22px; background:var(--green-light); border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--green); font-size:0.68rem; font-weight:900; flex-shrink:0;
+  }
+
+  /* Hero right */
+  .hero-right {
+    background:var(--green); position:relative; overflow:hidden;
+    display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:3px;
+  }
+  .hero-right::before {
+    content:''; position:absolute; inset:0; z-index:5;
+    background:linear-gradient(to right,white 0%,transparent 18%);
+  }
+  .mc { position:relative; display:flex; align-items:center; justify-content:center; }
+  .mc:nth-child(1){background:#0f3319;} .mc:nth-child(2){background:#1a4a26;}
+  .mc:nth-child(3){background:#17422a;} .mc:nth-child(4){background:#0c2e15;}
+  .mc svg { opacity:0.08; }
+
+  .hsc {
+    position:absolute; z-index:10; background:white; border-radius:8px;
+    box-shadow:0 12px 40px rgba(0,0,0,0.15); padding:16px 20px;
+  }
+  .hsc:nth-child(6){ top:28%; right:8%; animation:floatA 4s ease-in-out infinite; }
+  .hsc:nth-child(7){ bottom:24%; right:14%; animation:floatA 4s ease-in-out infinite; animation-delay:2s; }
+  @keyframes floatA { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  .hsc-val { font-family:'Barlow Condensed',sans-serif; font-size:2.1rem; font-weight:900; color:var(--green); line-height:1; }
+  .hsc-lbl { font-size:0.7rem; color:var(--gray-500); letter-spacing:0.06em; text-transform:uppercase; font-weight:600; }
+
+  .hero-pill {
+    position:absolute; bottom:32px; left:50%; transform:translateX(-50%); z-index:10;
+    background:var(--orange); color:white;
+    padding:12px 22px; border-radius:6px;
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:0.88rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;
+    box-shadow:0 8px 24px rgba(232,93,4,0.35); white-space:nowrap;
+  }
+
+  /* ── TRUST BAR ── */
+  .trust-bar {
+    background:var(--green); padding:18px 6%;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .tb { display:flex; align-items:center; gap:10px; color:rgba(255,255,255,0.9);
+    font-size:0.81rem; font-weight:500; letter-spacing:0.04em;
+    padding:0 28px; border-right:1px solid rgba(255,255,255,0.15); white-space:nowrap; }
+  .tb:last-child { border-right:none; }
+  .tb-ico { color:#7ddc96; }
+
+  /* ── SHARED SECTION ── */
+  .sec { padding:96px 8%; }
+  .sec-lbl {
+    display:inline-flex; align-items:center; gap:10px;
+    font-size:0.72rem; font-weight:700; letter-spacing:0.17em; text-transform:uppercase;
+    color:var(--green); margin-bottom:14px;
+  }
+  .sec-lbl::before { content:''; display:block; width:24px; height:2px; background:var(--green); }
+  .sec-h {
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:clamp(2rem,3.2vw,3rem); font-weight:900; text-transform:uppercase;
+    line-height:1.0; color:var(--black);
+  }
+  .sec-h .g { color:var(--green); }
+
+  /* ── SERVICES ── */
+  .services { background:var(--off-white); }
+  .svc-head { display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:end; margin-bottom:52px; }
+  .svc-intro { color:var(--gray-700); font-size:1rem; line-height:1.75; font-weight:300; }
+  .svc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(268px,1fr)); gap:14px; }
+  .svc {
+    background:var(--white); border:1px solid var(--gray-100);
+    border-radius:8px; padding:30px 26px; position:relative; overflow:hidden;
+    transition:all 0.3s; cursor:pointer;
+  }
+  .svc::after {
+    content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+    background:var(--green); transform:scaleY(0); transform-origin:bottom; transition:transform 0.3s;
+    border-radius:3px 0 0 3px;
+  }
+  .svc:hover { border-color:var(--green-light); box-shadow:var(--shadow-lg); transform:translateY(-4px); }
+  .svc:hover::after { transform:scaleY(1); }
+  .svc-n { font-family:'Barlow Condensed',sans-serif; font-size:4rem; font-weight:900; color:rgba(19,87,36,0.05); line-height:1; margin-bottom:10px; }
+  .svc-ico { width:46px; height:46px; background:var(--green-xlight); border-radius:6px; display:flex; align-items:center; justify-content:center; margin-bottom:14px; color:var(--green); font-size:1.35rem; transition:all 0.3s; }
+  .svc:hover .svc-ico { background:var(--green); color:white; }
+  .svc-name { font-family:'Barlow Condensed',sans-serif; font-size:1.1rem; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; color:var(--black); margin-bottom:10px; }
+  .svc-desc { font-size:0.86rem; color:var(--gray-500); line-height:1.65; font-weight:300; }
+
+  /* ── DIFF ── */
+  .diff { background:var(--white); }
+  .diff-inner { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+  .dpts { display:flex; flex-direction:column; margin-top:36px; }
+  .dpt { display:flex; gap:18px; padding:22px 0; border-bottom:1px solid var(--gray-100); transition:all 0.25s; }
+  .dpt:first-child { border-top:1px solid var(--gray-100); }
+  .dpt:hover .dpt-ico { background:var(--green); color:white; }
+  .dpt-ico { width:46px; height:46px; flex-shrink:0; background:var(--green-xlight); border-radius:6px; display:flex; align-items:center; justify-content:center; color:var(--green); font-size:1.1rem; transition:all 0.3s; }
+  .dpt-body strong { display:block; font-family:'Barlow Condensed',sans-serif; font-size:1.02rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:4px; color:var(--black); }
+  .dpt-body span { font-size:0.87rem; color:var(--gray-500); line-height:1.6; font-weight:300; }
+
+  .diff-right { position:relative; }
+  .metrics { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .mbox {
+    background:var(--off-white); border:1px solid var(--gray-100); border-radius:8px;
+    padding:26px 22px; position:relative; overflow:hidden; transition:all 0.3s;
+  }
+  .mbox::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--green); }
+  .mbox:hover { box-shadow:var(--shadow-md); transform:translateY(-3px); border-color:var(--green-light); }
+  .mval { font-family:'Barlow Condensed',sans-serif; font-size:2.8rem; font-weight:900; color:var(--green); line-height:1; margin-bottom:6px; }
+  .mlbl { font-size:0.78rem; color:var(--gray-500); letter-spacing:0.05em; text-transform:uppercase; font-weight:600; line-height:1.4; }
+  .dquote { margin-top:18px; padding:22px 26px; background:var(--green-xlight); border-left:4px solid var(--green); border-radius:0 8px 8px 0; }
+  .dquote p { font-size:0.95rem; color:var(--gray-700); line-height:1.65; font-style:italic; font-weight:300; }
+  .dquote cite { font-size:0.73rem; color:var(--green); font-style:normal; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; display:block; margin-top:8px; }
+
+  /* ── PROJECTS ── */
+  .projects { background:var(--off-white); }
+  .proj-head { margin-bottom:44px; display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:16px; }
+  .pgrid { display:grid; grid-template-columns:repeat(12,1fr); grid-template-rows:260px 200px; gap:10px; }
+  .pc { border-radius:8px; overflow:hidden; position:relative; cursor:pointer; }
+  .pc:nth-child(1){grid-column:1/6;grid-row:1;background:#0e3319;}
+  .pc:nth-child(2){grid-column:6/9;grid-row:1;background:#174524;}
+  .pc:nth-child(3){grid-column:9/13;grid-row:1;background:#0c2c16;}
+  .pc:nth-child(4){grid-column:1/4;grid-row:2;background:#1a4d28;}
+  .pc:nth-child(5){grid-column:4/9;grid-row:2;background:#112b18;}
+  .pc:nth-child(6){grid-column:9/13;grid-row:2;background:#193d22;}
+  .pc-icon { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:4rem; opacity:0.07; }
+  .pc-info { position:absolute; bottom:0; left:0; right:0; padding:18px; background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 100%); }
+  .pc-tag { font-size:0.67rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--orange); margin-bottom:4px; }
+  .pc-name { font-family:'Barlow Condensed',sans-serif; font-size:0.97rem; font-weight:700; color:white; text-transform:uppercase; letter-spacing:0.03em; }
+  .pc-hov { position:absolute; inset:0; background:rgba(19,87,36,0.88); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; opacity:0; transition:opacity 0.3s; }
+  .pc:hover .pc-hov { opacity:1; }
+  .ph-t { font-family:'Barlow Condensed',sans-serif; font-size:1.2rem; font-weight:800; color:white; text-transform:uppercase; text-align:center; padding:0 16px; }
+  .ph-d { font-size:0.79rem; color:rgba(255,255,255,0.7); text-align:center; padding:0 16px; font-weight:300; }
+
+  /* ── ABOUT ── */
+  .about { background:var(--white); }
+  .about-inner { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+  .about-txt { color:var(--gray-700); font-size:1rem; line-height:1.75; font-weight:300; margin:18px 0; }
+  .founders { display:flex; gap:14px; margin-top:28px; }
+  .founder { flex:1; background:var(--off-white); border:1px solid var(--gray-100); border-radius:8px; padding:18px; border-top:3px solid var(--green); transition:all 0.3s; }
+  .founder:hover { box-shadow:var(--shadow-md); transform:translateY(-3px); }
+  .fav { width:46px; height:46px; border-radius:50%; background:var(--green); display:flex; align-items:center; justify-content:center; font-family:'Barlow Condensed',sans-serif; font-size:1.15rem; font-weight:900; color:white; margin-bottom:10px; }
+  .fn { font-family:'Barlow Condensed',sans-serif; font-size:0.97rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:3px; }
+  .fr { font-size:0.73rem; color:var(--green); font-weight:700; letter-spacing:0.08em; text-transform:uppercase; }
+
+  .av { position:relative; }
+  .av-main { background:var(--green); aspect-ratio:5/4; border-radius:12px; overflow:hidden; display:flex; align-items:center; justify-content:center; position:relative; }
+  .av-main::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(-45deg,transparent,transparent 30px,rgba(255,255,255,0.03) 30px,rgba(255,255,255,0.03) 31px); }
+  .av-main svg { opacity:0.1; }
+  .av-badge { position:absolute; bottom:-20px; right:-20px; background:var(--orange); border-radius:10px; padding:16px 20px; text-align:center; box-shadow:0 12px 36px rgba(232,93,4,0.35); }
+  .av-num { font-family:'Barlow Condensed',sans-serif; font-size:2.5rem; font-weight:900; color:white; line-height:1; }
+  .av-txt { font-size:0.68rem; color:rgba(255,255,255,0.9); text-transform:uppercase; letter-spacing:0.08em; font-weight:600; }
+  .av-pill { position:absolute; top:-16px; left:24px; background:white; border:1px solid var(--gray-100); border-radius:100px; padding:8px 14px; box-shadow:var(--shadow-md); font-size:0.76rem; font-weight:700; color:var(--green); letter-spacing:0.05em; text-transform:uppercase; display:flex; align-items:center; gap:6px; }
+  .av-dot { width:8px; height:8px; background:var(--green); border-radius:50%; animation:blink 2s infinite; }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials { background:var(--off-white); }
+  .tg { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:44px; }
+  .tc { background:var(--white); border:1px solid var(--gray-100); border-radius:10px; padding:30px; transition:all 0.3s; }
+  .tc:hover { border-color:rgba(19,87,36,0.2); box-shadow:var(--shadow-md); transform:translateY(-4px); }
+  .tc-stars { color:var(--orange); font-size:0.88rem; letter-spacing:2px; margin-bottom:14px; }
+  .tc-txt { font-size:0.94rem; color:var(--gray-700); line-height:1.7; font-weight:300; font-style:italic; margin-bottom:22px; }
+  .tc-auth { display:flex; align-items:center; gap:11px; }
+  .ta-av { width:38px; height:38px; border-radius:50%; background:var(--green); display:flex; align-items:center; justify-content:center; font-family:'Barlow Condensed',sans-serif; font-size:0.95rem; font-weight:900; color:white; }
+  .ta-name { font-weight:600; font-size:0.87rem; margin-bottom:2px; }
+  .ta-loc { font-size:0.73rem; color:var(--gray-300); }
+
+  /* ── CTA BAND ── */
+  .cta-band {
+    background:var(--green); padding:72px 8%;
+    display:flex; align-items:center; justify-content:space-between; gap:40px; flex-wrap:wrap;
+    position:relative; overflow:hidden;
+  }
+  .cta-band::before { content:''; position:absolute; top:-60px; right:-60px; width:300px; height:300px; background:radial-gradient(circle,rgba(255,255,255,0.06) 0%,transparent 70%); }
+  .cb-left { max-width:580px; position:relative; z-index:1; }
+  .cb-lbl { font-size:0.72rem; font-weight:700; letter-spacing:0.17em; text-transform:uppercase; color:rgba(255,255,255,0.5); margin-bottom:12px; }
+  .cb-h { font-family:'Barlow Condensed',sans-serif; font-size:clamp(1.9rem,3vw,2.8rem); font-weight:900; text-transform:uppercase; color:white; line-height:1.05; margin-bottom:10px; }
+  .cb-sub { color:rgba(255,255,255,0.62); font-size:1rem; font-weight:300; }
+  .cb-right { display:flex; gap:14px; flex-wrap:wrap; position:relative; z-index:1; }
+
+  /* ── CONTACT ── */
+  .contact-sec { background:var(--off-white); padding:96px 8%; display:grid; grid-template-columns:1fr 1fr; gap:80px; }
+  .ci { display:flex; flex-direction:column; gap:14px; margin-top:26px; }
+  .ci-row { display:flex; align-items:center; gap:13px; font-size:0.94rem; color:var(--gray-700); }
+  .ci-ic { width:40px; height:40px; background:var(--green-xlight); border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--green); font-size:0.95rem; flex-shrink:0; }
+  .cf { display:flex; flex-direction:column; gap:14px; }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .fg { display:flex; flex-direction:column; gap:5px; }
+  .fg label { font-size:0.71rem; font-weight:700; letter-spacing:0.11em; text-transform:uppercase; color:var(--gray-500); }
+  .fg input,.fg select,.fg textarea { background:white; border:1.5px solid var(--gray-100); color:var(--black); padding:13px 15px; border-radius:6px; font-family:'Barlow',sans-serif; font-size:0.93rem; outline:none; transition:border-color 0.2s; }
+  .fg input:focus,.fg select:focus,.fg textarea:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(19,87,36,0.08); }
+  .fg textarea { resize:vertical; min-height:108px; }
+
+  /* ── FOOTER ── */
+  footer { background:var(--black); color:white; padding:36px 8%; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:18px; }
+  .fl { display:flex; align-items:center; gap:9px; }
+  .fl-name { font-family:'Barlow Condensed',sans-serif; font-size:1.2rem; font-weight:900; letter-spacing:0.06em; color:white; }
+  .fl-name span { color:var(--orange); }
+  .fc { font-size:0.77rem; color:rgba(255,255,255,0.3); }
+  .flinks { display:flex; gap:22px; }
+  .flinks a { font-size:0.79rem; color:rgba(255,255,255,0.35); text-decoration:none; transition:color 0.2s; }
+  .flinks a:hover { color:var(--orange); }
+
+  /* ── MOBILE FLOAT ── */
+  .mob { display:none; position:fixed; bottom:16px; left:16px; right:16px; z-index:300; background:var(--green); color:white; text-decoration:none; padding:17px; border-radius:8px; text-align:center; font-family:'Barlow Condensed',sans-serif; font-size:1.1rem; font-weight:800; letter-spacing:0.07em; text-transform:uppercase; box-shadow:0 8px 32px rgba(19,87,36,0.4); animation:floatM 3s ease-in-out infinite; }
+  @keyframes floatM { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+
+  /* ── REVEAL ── */
+  .reveal { opacity:0; transform:translateY(28px); transition:opacity 0.65s cubic-bezier(0.16,1,0.3,1),transform 0.65s cubic-bezier(0.16,1,0.3,1); }
+  .reveal.up { opacity:1; transform:none; }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:960px){
+    .hero{grid-template-columns:1fr;} .hero-right{display:none;}
+    .svc-head{grid-template-columns:1fr;} .diff-inner{grid-template-columns:1fr;gap:40px;}
+    .about-inner{grid-template-columns:1fr;} .contact-sec{grid-template-columns:1fr;gap:40px;}
+    .tg{grid-template-columns:1fr;}
+    .pgrid{grid-template-columns:1fr 1fr;grid-template-rows:auto;}
+    .pc{grid-column:auto!important;grid-row:auto!important;height:200px;}
+    .mob{display:block;}
+    nav ul{gap:16px;}
+    nav ul li:not(:last-child):not(:nth-last-child(2)){display:none;}
+    .cta-band{flex-direction:column;align-items:flex-start;}
+    .proj-head{flex-direction:column;align-items:flex-start;}
+    .trust-bar{flex-wrap:wrap;gap:8px;justify-content:flex-start;}
+    .tb{border-right:none;}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="logo" title="SANOG — Início">
+    <div class="logo-hex">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+        <path d="M9 21V13h6v8" fill="rgba(255,255,255,0.3)"/>
+      </svg>
+    </div>
+    <div class="logo-words">
+      <span class="logo-main">SANOG</span>
+      <span class="logo-tagline">Engenharia e Construções</span>
+    </div>
+  </a>
+  <ul>
+    <li><a href="#servicos">Serviços</a></li>
+    <li><a href="#projetos">Projetos</a></li>
+    <li><a href="#sobre">Sobre Nós</a></li>
+    <li><a href="#contacto" class="nav-cta">Pedir Orçamento</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-left">
+    <div class="hero-badge"><span class="badge-dot"></span>Engenharia + Execução no Terreno</div>
+    <h1>Construção<br><span class="acc">e Remodelação</span><br><span class="out">Sem Surpresas</span></h1>
+    <p class="hero-sub">Gerido por engenheiros, executado com rigor — prazos cumpridos, comunicação direta e obra garantida do início ao fim.</p>
+    <div class="hero-ctas">
+      <a href="#contacto" class="btn-green">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Pedir Orçamento
+      </a>
+      <a href="tel:+351000000000" class="btn-outline">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        Ligar Agora
+      </a>
+    </div>
+    <div class="hero-trust">
+      <div class="tp"><div class="tp-check">✓</div>Prazos Cumpridos</div>
+      <div class="tp"><div class="tp-check">✓</div>Engenheiros no Terreno</div>
+      <div class="tp"><div class="tp-check">✓</div>Resposta em 24h</div>
+      <div class="tp"><div class="tp-check">✓</div>Obra Garantida</div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="mc"><svg width="100" height="100" viewBox="0 0 24 24" fill="white"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></div>
+    <div class="mc"><svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div>
+    <div class="mc"><svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>
+    <div class="mc"><svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+    <div class="hsc"><div class="hsc-val">+100</div><div class="hsc-lbl">Projetos Concluídos</div></div>
+    <div class="hsc"><div class="hsc-val">24h</div><div class="hsc-lbl">Resposta Garantida</div></div>
+    <div class="hero-pill">⚡ Orçamento Gratuito em 24 Horas</div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="tb"><span class="tb-ico">✓</span>Construção de Raiz</div>
+  <div class="tb"><span class="tb-ico">✓</span>Remodelações Completas</div>
+  <div class="tb"><span class="tb-ico">✓</span>Capoto &amp; Isolamentos</div>
+  <div class="tb"><span class="tb-ico">✓</span>Infraestruturas</div>
+  <div class="tb"><span class="tb-ico">✓</span>Gestão por Engenheiros</div>
+</div>
+
+<!-- SERVICES -->
+<section class="sec services" id="servicos">
+  <div class="svc-head reveal">
+    <div>
+      <div class="sec-lbl">O Que Fazemos</div>
+      <h2 class="sec-h">Serviços de <span class="g">Construção</span><br>e Remodelação</h2>
+    </div>
+    <p class="svc-intro">Do pequeno ao grande projeto, cobrimos todas as fases da obra com planeamento técnico e execução rigorosa. Sempre com engenheiro responsável no terreno.</p>
+  </div>
+  <div class="svc-grid">
+    <div class="svc reveal"><div class="svc-n">01</div><div class="svc-ico">🏗️</div><div class="svc-name">Construção de Moradias</div><div class="svc-desc">Construção de raiz com gestão completa de projeto, desde fundações até entrega final. Planeamento estruturado e execução técnica controlada.</div></div>
+    <div class="svc reveal"><div class="svc-n">02</div><div class="svc-ico">🔧</div><div class="svc-name">Remodelações e Restauros</div><div class="svc-desc">Transformação completa ou parcial de espaços residenciais e comerciais com rigor técnico e prazos reais assumidos desde o início.</div></div>
+    <div class="svc reveal"><div class="svc-n">03</div><div class="svc-ico">🧱</div><div class="svc-name">Capoto e Isolamentos</div><div class="svc-desc">Sistemas ETICS para isolamento térmico e acústico. Eficiência energética comprovada e maior conforto durante todo o ano.</div></div>
+    <div class="svc reveal"><div class="svc-n">04</div><div class="svc-ico">🏛️</div><div class="svc-name">Estruturas e Coberturas</div><div class="svc-desc">Reforço estrutural, coberturas em madeira ou metálicas, impermeabilização e reabilitação de fachadas com garantia técnica.</div></div>
+    <div class="svc reveal"><div class="svc-n">05</div><div class="svc-ico">💧</div><div class="svc-name">Infraestruturas e Saneamento</div><div class="svc-desc">Redes de água, saneamento, pluviais e instalações prediais com cumprimento total dos regulamentos técnicos em vigor.</div></div>
+    <div class="svc reveal"><div class="svc-n">06</div><div class="svc-ico">🎨</div><div class="svc-name">Pinturas e Acabamentos</div><div class="svc-desc">Pintura interior e exterior, pladur, estuques e todos os acabamentos para entrega de obra impecável e com qualidade visual.</div></div>
+    <div class="svc reveal"><div class="svc-n">07</div><div class="svc-ico">🌿</div><div class="svc-name">Jardins e Espaços Exteriores</div><div class="svc-desc">Arranjos exteriores, pavimentações, muros e vedações com o mesmo rigor aplicado ao interior da obra.</div></div>
+    <div class="svc reveal"><div class="svc-n">08</div><div class="svc-ico">🚧</div><div class="svc-name">Demolições e Terraplanagens</div><div class="svc-desc">Demolição controlada e movimentação de terras com equipamentos adequados, segurança total e gestão de resíduos responsável.</div></div>
+  </div>
+</section>
+
+<!-- DIFF -->
+<section class="sec diff" id="diferenciais">
+  <div class="diff-inner">
+    <div class="reveal">
+      <div class="sec-lbl">A Nossa Diferença</div>
+      <h2 class="sec-h">Engenharia <span class="g">+</span> Execução.<br>Sem Surpresas.</h2>
+      <p style="color:var(--gray-500);font-size:1rem;line-height:1.75;font-weight:300;margin-top:16px;">Não somos apenas mão de obra. A SANOG combina formação técnica com presença permanente no terreno — obras bem planeadas, problemas antecipados e clientes sempre informados.</p>
+      <div class="dpts">
+        <div class="dpt"><div class="dpt-ico">📋</div><div class="dpt-body"><strong>Gestão por Engenheiros</strong><span>Cada obra é gerida por engenheiros com responsabilidade técnica real. Fala diretamente com quem decide — sem intermediários.</span></div></div>
+        <div class="dpt"><div class="dpt-ico">⏱️</div><div class="dpt-body"><strong>Planeamento Técnico Rigoroso</strong><span>Cronogramas reais, recursos definidos, previsão de riscos. Os prazos não são estimativas — são compromissos assumidos.</span></div></div>
+        <div class="dpt"><div class="dpt-ico">📡</div><div class="dpt-body"><strong>Comunicação Direta e Transparente</strong><span>Relatórios regulares, atualizações proativas e resposta rápida. A incerteza é o maior medo em qualquer obra — eliminamo-la.</span></div></div>
+        <div class="dpt"><div class="dpt-ico">🛡️</div><div class="dpt-body"><strong>Obra Garantida</strong><span>Entregamos com garantia. Problemas após obra são nossa responsabilidade. Não desaparecemos depois de receber o pagamento.</span></div></div>
+      </div>
+    </div>
+    <div class="diff-right reveal">
+      <div class="metrics">
+        <div class="mbox"><div class="mval">+100</div><div class="mlbl">Projetos Concluídos</div></div>
+        <div class="mbox"><div class="mval">10<span style="font-size:1.3rem">+</span></div><div class="mlbl">Anos de Experiência</div></div>
+        <div class="mbox"><div class="mval">98%</div><div class="mlbl">Taxa de Satisfação</div></div>
+        <div class="mbox"><div class="mval">24h</div><div class="mlbl">Prazo para Orçamento</div></div>
+      </div>
+      <div class="dquote">
+        <p>"Cumprimos prazos e entregamos obra pronta, sem surpresas. Não prometemos o que não conseguimos cumprir."</p>
+        <cite>— Política SANOG Engenharia</cite>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="sec projects" id="projetos">
+  <div class="proj-head reveal">
+    <div><div class="sec-lbl">Portfólio</div><h2 class="sec-h">Projetos <span class="g">Realizados</span></h2></div>
+    <a href="#contacto" class="btn-outline">Ver Todos os Projetos</a>
+  </div>
+  <div class="pgrid reveal">
+    <div class="pc"><div class="pc-icon">🏠</div><div class="pc-info"><div class="pc-tag">Construção Nova</div><div class="pc-name">Moradia Unifamiliar — Braga</div></div><div class="pc-hov"><div class="ph-t">Moradia Unifamiliar</div><div class="ph-d">240m² · 14 meses · Entregue no prazo</div></div></div>
+    <div class="pc"><div class="pc-icon">🔧</div><div class="pc-info"><div class="pc-tag">Remodelação Total</div><div class="pc-name">Apartamento T3 — Porto</div></div><div class="pc-hov"><div class="ph-t">Apartamento T3</div><div class="ph-d">95m² · Remodelação completa · 3 meses</div></div></div>
+    <div class="pc"><div class="pc-icon">🧱</div><div class="pc-info"><div class="pc-tag">Capoto e Isolamento</div><div class="pc-name">Edifício Residencial — Guimarães</div></div><div class="pc-hov"><div class="ph-t">Edifício 8 Apartamentos</div><div class="ph-d">Sistema ETICS · Redução 40% consumo energético</div></div></div>
+    <div class="pc"><div class="pc-icon">🏗️</div><div class="pc-info"><div class="pc-tag">Estrutura e Cobertura</div><div class="pc-name">Reabilitação — Barcelos</div></div><div class="pc-hov"><div class="ph-t">Reabilitação de Cobertura</div><div class="ph-d">Estrutura madeira · Impermeabilização total</div></div></div>
+    <div class="pc"><div class="pc-icon">💧</div><div class="pc-info"><div class="pc-tag">Infraestruturas</div><div class="pc-name">Rede Saneamento — Póvoa de Varzim</div></div><div class="pc-hov"><div class="ph-t">Rede Pluvial e Doméstica</div><div class="ph-d">Urbanização 12 lotes · 6 meses</div></div></div>
+    <div class="pc"><div class="pc-icon">🌿</div><div class="pc-info"><div class="pc-tag">Espaços Exteriores</div><div class="pc-name">Jardim e Pavimentação — Braga</div></div><div class="pc-hov"><div class="ph-t">Jardim e Pavimentos</div><div class="ph-d">1200m² · Muros, jardim e pavimentos</div></div></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="sec about" id="sobre">
+  <div class="about-inner">
+    <div class="reveal">
+      <div class="sec-lbl">Sobre Nós</div>
+      <h2 class="sec-h">Dois Engenheiros.<br><span class="g">Uma Empresa</span> Diferente.</h2>
+      <p class="about-txt">A SANOG nasceu da convicção de que construção civil merece mais rigor, mais transparência e menos surpresas. Gerida por dois engenheiros jovens com presença permanente no terreno — não somos só uma empresa de obras. Somos parceiros técnicos do seu projeto.</p>
+      <p class="about-txt">Do levantamento inicial à entrega final, há sempre um engenheiro responsável a controlar cada fase. Isso reflete-se em prazos cumpridos, comunicação clara e trabalho garantido.</p>
+      <div class="founders">
+        <div class="founder"><div class="fav">A</div><div class="fn">Eng. António</div><div class="fr">Sócio-Fundador · Eng. Civil</div></div>
+        <div class="founder"><div class="fav">R</div><div class="fn">Eng. Ricardo</div><div class="fr">Sócio-Fundador · Eng. Civil</div></div>
+      </div>
+    </div>
+    <div class="av reveal">
+      <div class="av-main"><svg width="180" height="180" viewBox="0 0 24 24" fill="white"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></div>
+      <div class="av-badge"><div class="av-num">10+</div><div class="av-txt">Anos de<br>Experiência</div></div>
+      <div class="av-pill"><span class="av-dot"></span>Engenheiros no Terreno</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="sec testimonials">
+  <div class="reveal"><div class="sec-lbl">Clientes</div><h2 class="sec-h">O Que Dizem <span class="g">os Nossos</span> Clientes</h2></div>
+  <div class="tg">
+    <div class="tc reveal"><div class="tc-stars">★★★★★</div><p class="tc-txt">"Obra entregue no prazo e dentro do orçamento. O que mais valorizo é a comunicação — sempre soube o que estava a acontecer. Sem surpresas desagradáveis."</p><div class="tc-auth"><div class="ta-av">M</div><div><div class="ta-name">Miguel F.</div><div class="ta-loc">Construção de Moradia · Braga</div></div></div></div>
+    <div class="tc reveal"><div class="tc-stars">★★★★★</div><p class="tc-txt">"Remodelação total do apartamento em menos de 3 meses. Profissionalismo excelente, equipa limpa e organizada. Recomendo sem hesitar a qualquer pessoa."</p><div class="tc-auth"><div class="ta-av">A</div><div><div class="ta-name">Ana S.</div><div class="ta-loc">Remodelação T3 · Porto</div></div></div></div>
+    <div class="tc reveal"><div class="tc-stars">★★★★★</div><p class="tc-txt">"Trabalho técnico muito acima da média. Sabem o que fazem e explicam tudo com clareza. Sinto que confiei na pessoa certa para a minha casa."</p><div class="tc-auth"><div class="ta-av">J</div><div><div class="ta-name">João M.</div><div class="ta-loc">Capoto e Acabamentos · Guimarães</div></div></div></div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band reveal">
+  <div class="cb-left">
+    <div class="cb-lbl">Pronto para Começar?</div>
+    <h2 class="cb-h">Peça um Orçamento<br>Gratuito em 24 Horas</h2>
+    <p class="cb-sub">Explique-nos o seu projeto. Analisamos, respondemos com rigor e sem compromisso.</p>
+  </div>
+  <div class="cb-right">
+    <a href="#contacto" class="btn-white"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Pedir Orçamento</a>
+    <a href="tel:+351000000000" class="btn-ghost-white"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>Ligar Agora</a>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<section class="contact-sec" id="contacto">
+  <div class="reveal">
+    <div class="sec-lbl">Contacto</div>
+    <h2 class="sec-h">Fale <span class="g">Connosco</span></h2>
+    <p style="color:var(--gray-500);font-size:1rem;line-height:1.7;font-weight:300;margin-top:16px;">Explique-nos o seu projeto e entramos em contacto em menos de 24 horas. Sem compromisso, sem pressão.</p>
+    <div class="ci">
+      <div class="ci-row"><div class="ci-ic">📧</div>geral@sanog.pt</div>
+      <div class="ci-row"><div class="ci-ic">📱</div>+351 XXX XXX XXX</div>
+      <div class="ci-row"><div class="ci-ic">📍</div>Portugal — Braga, Porto e Norte</div>
+      <div class="ci-row"><div class="ci-ic">⏱️</div>Resposta garantida em 24 horas</div>
+    </div>
+  </div>
+  <div class="cf reveal">
+    <div class="form-row">
+      <div class="fg"><label>Nome</label><input type="text" placeholder="O seu nome"></div>
+      <div class="fg"><label>Contacto</label><input type="tel" placeholder="Telemóvel ou email"></div>
+    </div>
+    <div class="fg">
+      <label>Tipo de Obra</label>
+      <select>
+        <option value="">Selecione o tipo de obra</option>
+        <option>Construção de Moradia</option>
+        <option>Remodelação Total</option>
+        <option>Remodelação Parcial</option>
+        <option>Capoto / Isolamento</option>
+        <option>Estrutura / Cobertura</option>
+        <option>Infraestruturas</option>
+        <option>Espaços Exteriores</option>
+        <option>Outro</option>
+      </select>
+    </div>
+    <div class="fg"><label>Descreva o seu projeto</label><textarea placeholder="Conte-nos o que pretende fazer — localização, dimensão, prazo ideal..."></textarea></div>
+    <a href="mailto:geral@sanog.pt" class="btn-green" style="justify-content:center;">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      Enviar Pedido de Orçamento
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fl">
+    <div class="logo-hex" style="width:34px;height:34px;"><svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:white"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V13h6v8" fill="rgba(255,255,255,0.3)"/></svg></div>
+    <div class="fl-name">SANOG <span>·</span> Engenharia</div>
+  </div>
+  <div class="fc">© 2025 SANOG Engenharia e Construções · geral@sanog.pt</div>
+  <div class="flinks">
+    <a href="#servicos">Serviços</a>
+    <a href="#projetos">Projetos</a>
+    <a href="#sobre">Sobre</a>
+    <a href="#contacto">Contacto</a>
+  </div>
+</footer>
+
+<!-- MOBILE FLOAT -->
+<a href="tel:+351000000000" class="mob">📞 Ligar Agora — Orçamento Grátis</a>
+
+<script>
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20));
+
+  const obs = new IntersectionObserver(
+    entries => entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('up'); obs.unobserve(e.target); } }),
+    { threshold: 0.08 }
+  );
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  const secs = document.querySelectorAll('[id]');
+  const links = document.querySelectorAll('nav ul a:not(.nav-cta)');
+  window.addEventListener('scroll', () => {
+    let cur = '';
+    secs.forEach(s => { if(window.scrollY >= s.offsetTop - 100) cur = s.id; });
+    links.forEach(a => { a.style.color = a.getAttribute('href') === '#'+cur ? 'var(--green)' : ''; });
+  });
+</script>
+</body>
+</html>
