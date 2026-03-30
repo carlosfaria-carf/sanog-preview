@@ -49,12 +49,20 @@
     transition:opacity 0.2s;
   }
   .logo:hover { opacity:0.82; }
-  .logo-hex {
-    width:44px; height:44px; background:var(--green);
-    clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
-    display:flex; align-items:center; justify-content:center; flex-shrink:0;
-  }
-  .logo-hex svg { width:20px; height:20px; fill:white; }
+ .logo-hex {
+  width:44px;
+  height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+  .logo-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
   .logo-words { display:flex; flex-direction:column; line-height:1.1; }
   .logo-main { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1.35rem; letter-spacing:0.07em; color:var(--green); text-transform:uppercase; }
   .logo-tagline { font-size:0.62rem; font-weight:600; letter-spacing:0.14em; color:var(--gray-500); text-transform:uppercase; }
@@ -399,12 +407,9 @@
 <!-- NAV -->
 <nav id="navbar">
   <a href="#" class="logo" title="SANOG — Início">
-    <div class="logo-hex">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
-        <path d="M9 21V13h6v8" fill="rgba(255,255,255,0.3)"/>
-      </svg>
-    </div>
+   <div class="logo-hex">
+  <img src="logo.png" alt="SANOG" class="logo-icon">
+</div>
     <div class="logo-words">
       <span class="logo-main">SANOG</span>
       <span class="logo-tagline">Engenharia e Construções</span>
